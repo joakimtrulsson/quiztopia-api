@@ -15,6 +15,7 @@ provider:
     DYNAMODB_QUIZ_TABLE: QuizTable
     DYNAMODB_CREATOR_INDEX: creatorIDIndex
     DYNAMODB_QUESTION_TABLE: questionTable
+    DYNAMODB_QUESTION_INDEX: quizIdIndex
     DYNAMODB_REGION: 'eu-north-1'
 useDotenv: true
 
@@ -50,12 +51,12 @@ functions:
       - httpApi:
           path: '/api/quiz'
           method: GET
-  # getQuiz:
-  #   handler: src/functions/getQuiz.handler
-  #   events:
-  #     - httpApi:
-  #         path: '/api/quiz/{quizId}'
-  #         method: GET
+  getQuiz:
+    handler: src/functions/getQuiz.handler
+    events:
+      - httpApi:
+          path: '/api/quiz/{quizId}'
+          method: GET
 
 resources:
   Resources:
