@@ -12,6 +12,9 @@ provider:
   environment:
     DYNAMODB_USERS_TABLE: QuizUsersDb
     DYNAMODB_USER_INDEX: userNameIndex
+    DYNAMODB_QUIZ_TABLE: QuizTable
+    DYNAMODB_CREATOR_INDEX: creatorIDIndex
+    DYNAMODB_QUESTION_TABLE: questionTable
     DYNAMODB_REGION: 'eu-north-1'
 useDotenv: true
 
@@ -24,22 +27,34 @@ package:
 
 functions:
   signUpUser:
-    handler: src/functions/user/signUpUser.handler
+    handler: src/functions/signUpUser.handler
     events:
       - httpApi:
           path: '/api/signup'
           method: POST
   signInUser:
-    handler: src/functions/user/signInUser.handler
+    handler: src/functions/signInUser.handler
     events:
       - httpApi:
           path: '/api/signin'
           method: POST
-  # getAllQuiz:
-  #   handler: src/functions/getAllQuiz/index.handler
+  postNewQuiz:
+    handler: src/functions/postNewQuiz.handler
+    events:
+      - httpApi:
+          path: '/api/quiz'
+          method: POST
+  getAllQuizes:
+    handler: src/functions/getAllQuizes.handler
+    events:
+      - httpApi:
+          path: '/api/quiz'
+          method: GET
+  # getQuiz:
+  #   handler: src/functions/getQuiz.handler
   #   events:
   #     - httpApi:
-  #         path: '/api/quiz/'
+  #         path: '/api/quiz/{quizId}'
   #         method: GET
 
 resources:
@@ -61,6 +76,46 @@ resources:
           - IndexName: userNameIndex
             KeySchema:
               - AttributeName: userName
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    QuizTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: QuizTable
+        AttributeDefinitions:
+          - AttributeName: quizId
+            AttributeType: S
+          - AttributeName: creatorId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: quizId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: creatorIDIndex
+            KeySchema:
+              - AttributeName: creatorId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    questionTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: questionTable
+        AttributeDefinitions:
+          - AttributeName: questionId
+            AttributeType: S
+          - AttributeName: quizId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: questionId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: quizIdIndex
+            KeySchema:
+              - AttributeName: quizId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL

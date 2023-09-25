@@ -1,6 +1,6 @@
-const { sendResponse, sendError } = require('../../responses/index');
-const { db } = require('../../services/index');
-const { createToken } = require('../../utils/signToken');
+const { sendResponse, sendError } = require('../responses/index');
+const { db } = require('../services/index');
+const { createToken } = require('../utils/signToken');
 
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcryptjs');
@@ -59,6 +59,10 @@ exports.handler = async (event, context) => {
     });
   } catch (error) {
     console.error(error);
-    return sendError(500, { success: false, error: 'User registration failed.' });
+    return sendError(500, {
+      success: false,
+      errorMessage: error.message,
+      error: 'User registration failed.',
+    });
   }
 };

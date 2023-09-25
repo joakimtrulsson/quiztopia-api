@@ -1,6 +1,6 @@
-const { sendResponse, sendError } = require('../../responses/index');
-const { db } = require('../../services/index');
-const { createToken } = require('../../utils/signToken');
+const { sendResponse, sendError } = require('../responses/index');
+const { db } = require('../services/index');
+const { createToken } = require('../utils/signToken');
 
 const bcrypt = require('bcryptjs');
 
@@ -22,7 +22,6 @@ exports.handler = async (event, context) => {
     };
 
     const userData = await db.query(params).promise();
-    console.log(userData);
 
     if (userData.Items.length === 0) {
       return sendError(401, { success: false, error: 'User not found.' });
@@ -46,6 +45,6 @@ exports.handler = async (event, context) => {
     });
   } catch (error) {
     console.error(error);
-    return sendError(500, { success: false, error: 'User sign-in failed.' });
+    return sendError(500, { success: false, errorMessage: error.message, error: 'User sign-in failed.' });
   }
 };

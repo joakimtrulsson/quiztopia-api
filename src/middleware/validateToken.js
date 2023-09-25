@@ -8,15 +8,15 @@ const validateToken = {
     try {
       const token = request.event.headers.authorization.replace('Bearer ', '');
 
-      if (!token) throw new Error('No token provided.');
-
       const decoded = await promisify(jwt.verify)(token, process.env.JWTSECRET);
 
-      request.event.email = decoded.email;
+      request.event.userId = decoded.userId;
 
       return request.response;
     } catch (error) {
-      console.log(error.name);
+      if (error.name === 'TypeError') {
+        return sendError(401, { success: false, message: 'No token provided.' });
+      }
       if (error.name === 'JsonWebTokenError') {
         return sendError(401, { success: false, message: 'Invalid token.' });
       }
