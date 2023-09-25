@@ -45,7 +45,10 @@ const handler = middy(async (event) => {
     };
 
     const questionsResult = await db.batchWrite(questionParams).promise();
-    // Length error hantering
+
+    if (questionsResult.UnprocessedItems.roomDb) {
+      return sendError(500, { success: false, message: 'All questions could not be saved.' });
+    }
 
     return sendResponse(200, {
       success: true,
