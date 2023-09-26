@@ -57,6 +57,12 @@ functions:
       - httpApi:
           path: '/api/quiz/{quizId}'
           method: GET
+  postAdditionalQuestionsToQuiz:
+    handler: src/functions/postAdditionalQuestionsToQuiz.handler
+    events:
+      - httpApi:
+          path: '/api/quiz/{quizId}'
+          method: PATCH
 
 resources:
   Resources:

@@ -37,11 +37,18 @@ exports.handler = async (event, context) => {
 
     const questionResult = await db.query(questionParams).promise();
 
+    if (questionResult.Count === 0) {
+      return sendError(404, {
+        success: false,
+        message: 'Questions not found.',
+      });
+    }
+
     const questions = questionResult.Items;
 
     return sendResponse(200, {
       success: true,
-      message: 'Quiz and questions retrieved successfully.',
+      results: questions.length,
       quiz,
       questions,
     });
