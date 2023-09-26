@@ -6,24 +6,23 @@ Projektet har skapats som en del av en inlärningsprocess för att förstå och 
 
 ## Funktioner
 
-<!-- - **Bokning av rum:** Gäster kan enkelt söka och boka tillgängliga rum för sina resedatum.
-- **Autentisering:** Användare kan skapa konton, logga in och hantera sina bokningar.
+- **Hämta ett quiz:** Besökare kan enkelt söka efter alla quiz eller ett specifikt qiuz.
+- **Autentisering:** Användare kan skapa konton, logga in, skapa quiz och lägga till frågor till sitt quiz.
 - **Säkerhet:** Känslig användardata skyddas med kryptering.
-- **Hantering av tillgänglighet:** Systemet uppdaterar automatiskt rumstillgänglighet baserat på bokningar, avbokningar och datum. -->
+- **Leaderboard:** För att uppmuntra tävling och engagemang har jag implementerat en "Leaderboard" där användare kan se topplistan över poäng och användare för varje quiz. Användare har också möjlighet att registrera sina egna poäng och tävla om högsta platsen på leaderboarden.
 
 ## Teknisk Arkitektur
 
-Projektet är uppbyggt med en serverlös arkitektur med hjälp av AWS-tjänster som Lambda, DynamoDB och S3 Bucket. Middleware-hanteringen och autentiseringen hanteras med hjälp av Middy. Användare autentiseras med JsonWebToken (JWT), och lösenord lagras säkert med hjälp av Bcrypt.
+Projektet är uppbyggt med en serverlös arkitektur med hjälp av AWS-tjänster som Lambda, DynamoDB och Serverless. Middleware-hanteringen och autentiseringen hanteras med hjälp av Middy. Användare autentiseras med JsonWebToken (JWT), och lösenord lagras säkert med hjälp av Bcrypt.
 
 ## Kom igång
 
-För att komma igång med Quantum Lux Hotel Booking System, följ de här stegen:
+För att komma igång med Quiztopia Api, följ de här stegen:
 
-1. **Klona projektet:** `git clone https://github.com/joakimtrulsson/quantum-lux-hotel-backend`
+1. **Klona projektet:** `git clone https://github.com/joakimtrulsson/quiztopia-api`
 2. **Installera beroenden:** `npm install`
 3. **Konfigurera miljövariabler:** Skapa en `.env`-fil med nödvändiga miljövariabler.
-4. **Lokal utveckling:** Kör `npm run dev` för att starta projektet i lokal utvecklingsläge.
-5. **Deploy till AWS:** Använd Serverless Framework för att distribuera projektet till AWS.
+4. **Deploy till AWS:** Använd Serverless Framework för att distribuera projektet till AWS.
 
 ## Miljövariabler
 
