@@ -1,30 +1,21 @@
 const { sendResponse, sendError } = require('../responses/index');
+const { checkIfQuizExists } = require('../utilities/quizUtils');
 const { db } = require('../services/index');
 
 exports.handler = async (event, context) => {
   try {
     const quizId = event.pathParameters.quizId;
-    console.log(quizId);
 
-    const quizParams = {
-      TableName: process.env.DYNAMODB_QUIZ_TABLE,
-      KeyConditionExpression: 'quizId = :quizId',
-      ExpressionAttributeValues: {
-        ':quizId': quizId,
-      },
-    };
+    const quizExists = await checkIfQuizExists(quizId);
 
-    const quizResult = await db.query(quizParams).promise();
-    console.log(quizResult);
-
-    if (quizResult.Count === 0) {
+    if (!quizExists) {
       return sendError(404, {
         success: false,
         message: 'Quiz not found.',
       });
     }
 
-    const quiz = quizResult.Items[0];
+    const quiz = quizExists;
 
     const questionParams = {
       TableName: process.env.DYNAMODB_QUESTION_TABLE,

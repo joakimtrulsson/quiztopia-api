@@ -16,6 +16,7 @@ provider:
     DYNAMODB_CREATOR_INDEX: creatorIDIndex
     DYNAMODB_QUESTION_TABLE: questionTable
     DYNAMODB_QUESTION_INDEX: quizIdIndex
+    DYNAMODB_LEADERBOARD_TABLE: LeaderboardTable
     DYNAMODB_REGION: 'eu-north-1'
 useDotenv: true
 
@@ -69,6 +70,18 @@ functions:
       - httpApi:
           path: '/api/quiz/{quizId}'
           method: DELETE
+  postScoreToLeaderboard:
+    handler: src/functions/postScoreToLeaderboard.handler
+    events:
+      - httpApi:
+          path: '/api/quiz/leaderboard/{quizId}'
+          method: POST
+  getLeaderboardByQuiz:
+    handler: src/functions/getLeaderboardByQuiz.handler
+    events:
+      - httpApi:
+          path: '/api/quiz/leaderboard/{quizId}'
+          method: GET
 
 resources:
   Resources:
@@ -130,5 +143,31 @@ resources:
             KeySchema:
               - AttributeName: quizId
                 KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    LeaderboardTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: LeaderboardTable
+        AttributeDefinitions:
+          - AttributeName: quizId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: score
+            AttributeType: N
+        KeySchema:
+          - AttributeName: quizId
+            KeyType: HASH
+          - AttributeName: userId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: ScoreIndex
+            KeySchema:
+              - AttributeName: quizId
+                KeyType: HASH
+              - AttributeName: score
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL

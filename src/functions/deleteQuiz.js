@@ -2,27 +2,44 @@ const middy = require('@middy/core');
 
 const { validateToken } = require('../middleware/validateToken');
 const { sendResponse, sendError } = require('../responses/index');
+const { checkIfQuizExists } = require('../utilities/quizUtils');
 const { db } = require('../services/index');
 
 const handler = middy(async (event, context) => {
   try {
     const quizId = event.pathParameters.quizId;
 
-    const quizParams = {
-      TableName: process.env.DYNAMODB_QUIZ_TABLE,
-      KeyConditionExpression: 'quizId = :quizId',
-      ExpressionAttributeValues: {
-        ':quizId': quizId,
-      },
-    };
+    // const quizParams = {
+    //   TableName: process.env.DYNAMODB_QUIZ_TABLE,
+    //   KeyConditionExpression: 'quizId = :quizId',
+    //   ExpressionAttributeValues: {
+    //     ':quizId': quizId,
+    //   },
+    // };
 
-    const quizResult = await db.query(quizParams).promise();
-    console.log(quizResult);
+    // const quizResult = await db.query(quizParams).promise();
+    // console.log(quizResult);
 
-    if (quizResult.Count === 0) {
+    // if (quizResult.Count === 0) {
+    //   return sendError(404, {
+    //     success: false,
+    //     message: 'Quiz not found.',
+    //   });
+    // }
+
+    const quizExists = await checkIfQuizExists(quizId);
+
+    if (!quizExists) {
       return sendError(404, {
         success: false,
         message: 'Quiz not found.',
+      });
+    }
+
+    if (quizExists.Items[0].creatorId !== userId) {
+      return sendError(403, {
+        success: false,
+        message: 'Access denied. You do not have permission to delete this quiz.',
       });
     }
 
