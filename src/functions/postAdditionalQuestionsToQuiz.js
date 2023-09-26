@@ -62,7 +62,7 @@ const handler = middy(async (event) => {
 
     return sendResponse(200, {
       success: true,
-      message: 'Questions successfully added to quiz.',
+      message: `Questions successfully added to quiz ${quiz.Items[0].quizName}.`,
     });
   } catch (error) {
     return sendError(400, {
