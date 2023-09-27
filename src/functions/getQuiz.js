@@ -6,16 +6,14 @@ exports.handler = async (event, context) => {
   try {
     const quizId = event.pathParameters.quizId;
 
-    const quizExists = await checkIfQuizExists(quizId);
+    const quiz = await checkIfQuizExists(quizId);
 
-    if (!quizExists) {
+    if (!quiz) {
       return sendError(404, {
         success: false,
         message: 'Quiz not found.',
       });
     }
-
-    const quiz = quizExists;
 
     const questionParams = {
       TableName: process.env.DYNAMODB_QUESTION_TABLE,

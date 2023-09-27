@@ -28,14 +28,5 @@ const checkIfQuizExists = async (quizId) => {
 };
 
 module.exports = {
-  // calculateTotalPrice: function (roomDetails, totalNights) {
-  //   if (!roomDetails || !Array.isArray(roomDetails.Responses.roomsDb)) {
-  //     return 0;
-  //   }
-  //   const totalPrice = roomDetails.Responses.roomsDb.reduce((acc, room) => {
-  //     return acc + room.price * totalNights;
-  //   }, 0);
-  //   return totalPrice;
-  // },
   checkIfQuizExists: checkIfQuizExists,
 };
