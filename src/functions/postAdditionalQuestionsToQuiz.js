@@ -1,13 +1,19 @@
 const middy = require('@middy/core');
 const { nanoid } = require('nanoid');
+const validator = require('@middy/validator');
+const { transpileSchema } = require('@middy/validator/transpile');
+const httpJsonBodyParser = require('@middy/http-json-body-parser');
+const httpErrorHandler = require('@middy/http-error-handler');
+const httpHeaderNormalizer = require('@middy/http-header-normalizer');
 
 const { db } = require('../services/index');
 const { validateToken } = require('../middleware/validateToken');
 const { sendResponse, sendError } = require('../responses/index');
+const schema = require('../schemas/postAdditionalQuestionsScema.json');
 
 const handler = middy(async (event) => {
   try {
-    const requestBody = JSON.parse(event.body);
+    const requestBody = event.body;
     const { questions } = requestBody;
 
     const userId = event.userId;
@@ -23,7 +29,7 @@ const handler = middy(async (event) => {
 
     const quiz = await db.query(quizParams).promise();
 
-    if (quizResult.Count === 0) {
+    if (quiz.Count === 0) {
       return sendError(404, {
         success: false,
         message: 'Quiz not found.',
@@ -71,6 +77,15 @@ const handler = middy(async (event) => {
       message: 'Could not add your questions.',
     });
   }
-}).use(validateToken);
+})
+  .use(validateToken)
+  .use(httpHeaderNormalizer())
+  .use(httpJsonBodyParser())
+  .use(
+    validator({
+      eventSchema: transpileSchema(schema),
+    })
+  )
+  .use(httpErrorHandler());
 
 module.exports = { handler };

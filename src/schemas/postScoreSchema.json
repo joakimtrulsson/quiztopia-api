@@ -4,11 +4,10 @@
   "properties": {
     "body": {
       "type": "object",
-      "required": ["userName", "password"],
+      "required": ["score"],
       "additionalProperties": false,
       "properties": {
-        "userName": { "type": "string" },
-        "password": { "type": "string" }
+        "score": { "type": "number" }
       }
     }
   }

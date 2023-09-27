@@ -1,6 +1,5 @@
 const middy = require('@middy/core');
 const bcrypt = require('bcryptjs');
-// Nytt
 const validator = require('@middy/validator');
 const { transpileSchema } = require('@middy/validator/transpile');
 const httpJsonBodyParser = require('@middy/http-json-body-parser');

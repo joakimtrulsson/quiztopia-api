@@ -1,13 +1,20 @@
+const { nanoid } = require('nanoid');
+const middy = require('@middy/core');
+const bcrypt = require('bcryptjs');
+const validator = require('@middy/validator');
+const { transpileSchema } = require('@middy/validator/transpile');
+const httpJsonBodyParser = require('@middy/http-json-body-parser');
+const httpErrorHandler = require('@middy/http-error-handler');
+const httpHeaderNormalizer = require('@middy/http-header-normalizer');
+
 const { sendResponse, sendError } = require('../responses/index');
 const { db } = require('../services/index');
 const { createToken } = require('../utilities/signToken');
+const schema = require('../schemas/signUpSchema.json');
 
-const { nanoid } = require('nanoid');
-const bcrypt = require('bcryptjs');
-
-exports.handler = async (event, context) => {
+const handler = middy(async (event, context) => {
   try {
-    const requestBody = JSON.parse(event.body);
+    const requestBody = event.body;
 
     if (requestBody.password !== requestBody.passwordConfirm) {
       return sendError(400, { success: false, message: 'Passwords do not match.' });
@@ -65,4 +72,14 @@ exports.handler = async (event, context) => {
       error: 'User registration failed.',
     });
   }
-};
+})
+  .use(httpHeaderNormalizer())
+  .use(httpJsonBodyParser())
+  .use(
+    validator({
+      eventSchema: transpileSchema(schema),
+    })
+  )
+  .use(httpErrorHandler());
+
+module.exports = { handler };
