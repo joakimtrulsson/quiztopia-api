@@ -32,3 +32,11 @@ Projektet kräver följande miljövariabler:
 - `LAMBDA_ROLE`: Din AWS Lambda roll.
 - `JWTSECRET`: En hemlig nyckel för att signera JWT-token.
 - `JWTEXPIRATION`: Giltigthetstiden för JWT-Token.
+
+## Insomnia
+
+För att underlätta testning av API:et har jag skapat en Insomnia-kollektion som du kan använda. Kollektionen innehåller fördefinierade requests för att testa API:ets olika funktioner och resurser.
+
+## Individuell Examinationsuppgift
+
+Detta projekt har utvecklats som en individuell examinationsuppgift som en del av kursen "Backend Fördjupning".
