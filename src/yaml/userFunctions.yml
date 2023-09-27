@@ -1,0 +1,12 @@
+signUpUser:
+  handler: src/functions/signUpUser.handler
+  events:
+    - httpApi:
+        path: '/api/signup'
+        method: POST
+signInUser:
+  handler: src/functions/signInUser.handler
+  events:
+    - httpApi:
+        path: '/api/signin'
+        method: POST

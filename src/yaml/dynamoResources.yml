@@ -1,0 +1,87 @@
+Resources:
+  QuizUsersDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: QuizUsersDb
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: userName
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: userNameIndex
+          KeySchema:
+            - AttributeName: userName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+  QuizTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: QuizTable
+      AttributeDefinitions:
+        - AttributeName: quizId
+          AttributeType: S
+        - AttributeName: creatorId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: quizId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: creatorIDIndex
+          KeySchema:
+            - AttributeName: creatorId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+  questionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: questionTable
+      AttributeDefinitions:
+        - AttributeName: questionId
+          AttributeType: S
+        - AttributeName: quizId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: questionId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: quizIdIndex
+          KeySchema:
+            - AttributeName: quizId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+  LeaderboardTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LeaderboardTable
+      AttributeDefinitions:
+        - AttributeName: quizId
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: score
+          AttributeType: N
+      KeySchema:
+        - AttributeName: quizId
+          KeyType: HASH
+        - AttributeName: userId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: ScoreIndex
+          KeySchema:
+            - AttributeName: quizId
+              KeyType: HASH
+            - AttributeName: score
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL

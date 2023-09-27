@@ -1,0 +1,12 @@
+postScoreToLeaderboard:
+  handler: src/functions/postScoreToLeaderboard.handler
+  events:
+    - httpApi:
+        path: '/api/quiz/leaderboard/{quizId}'
+        method: POST
+getLeaderboardByQuiz:
+  handler: src/functions/getLeaderboardByQuiz.handler
+  events:
+    - httpApi:
+        path: '/api/quiz/leaderboard/{quizId}'
+        method: GET

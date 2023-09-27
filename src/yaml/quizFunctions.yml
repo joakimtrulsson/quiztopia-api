@@ -1,0 +1,30 @@
+postNewQuiz:
+  handler: src/functions/postNewQuiz.handler
+  events:
+    - httpApi:
+        path: '/api/quiz'
+        method: POST
+getAllQuizes:
+  handler: src/functions/getAllQuizes.handler
+  events:
+    - httpApi:
+        path: '/api/quiz'
+        method: GET
+getQuiz:
+  handler: src/functions/getQuiz.handler
+  events:
+    - httpApi:
+        path: '/api/quiz/{quizId}'
+        method: GET
+postAdditionalQuestionsToQuiz:
+  handler: src/functions/postAdditionalQuestionsToQuiz.handler
+  events:
+    - httpApi:
+        path: '/api/quiz/{quizId}'
+        method: PATCH
+deleteQuiz:
+  handler: src/functions/deleteQuiz.handler
+  events:
+    - httpApi:
+        path: '/api/quiz/{quizId}'
+        method: DELETE
