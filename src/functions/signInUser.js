@@ -1,12 +1,20 @@
+const middy = require('@middy/core');
+const bcrypt = require('bcryptjs');
+// Nytt
+const validator = require('@middy/validator');
+const { transpileSchema } = require('@middy/validator/transpile');
+const httpJsonBodyParser = require('@middy/http-json-body-parser');
+const httpErrorHandler = require('@middy/http-error-handler');
+const httpHeaderNormalizer = require('@middy/http-header-normalizer');
+
 const { sendResponse, sendError } = require('../responses/index');
 const { db } = require('../services/index');
-const { createToken } = require('../utils/signToken');
+const { createToken } = require('../utilities/signToken');
+const schema = require('../schemas/signInSchema.json');
 
-const bcrypt = require('bcryptjs');
-
-exports.handler = async (event, context) => {
+const handler = middy(async (event, context) => {
   try {
-    const { userName, password } = JSON.parse(event.body);
+    const { userName, password } = event.body;
 
     if (!userName || !password) {
       return sendError(400, { success: false, error: 'Please provide username and password.' });
@@ -44,7 +52,20 @@ exports.handler = async (event, context) => {
       token,
     });
   } catch (error) {
-    console.error(error);
-    return sendError(500, { success: false, errorMessage: error.message, error: 'User sign-in failed.' });
+    return sendError(500, {
+      success: false,
+      errorMessage: error.message,
+      error: 'User sign-in failed.',
+    });
   }
-};
+})
+  .use(httpHeaderNormalizer())
+  .use(httpJsonBodyParser())
+  .use(
+    validator({
+      eventSchema: transpileSchema(schema),
+    })
+  )
+  .use(httpErrorHandler());
+
+module.exports = { handler };

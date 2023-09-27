@@ -1,6 +1,6 @@
 const { sendResponse, sendError } = require('../responses/index');
 const { db } = require('../services/index');
-const { createToken } = require('../utils/signToken');
+const { createToken } = require('../utilities/signToken');
 
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcryptjs');
