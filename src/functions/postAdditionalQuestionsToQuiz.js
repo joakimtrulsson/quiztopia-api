@@ -10,6 +10,7 @@ const { db } = require('../services/index');
 const { validateToken } = require('../middleware/validateToken');
 const { sendResponse, sendError } = require('../responses/index');
 const schema = require('../schemas/postAdditionalQuestionsScema.json');
+const { checkIfQuizExists } = require('../utilities/quizUtils');
 
 const handler = middy(async (event) => {
   try {
@@ -19,24 +20,16 @@ const handler = middy(async (event) => {
     const userId = event.userId;
     const quizId = event.pathParameters.quizId;
 
-    const quizParams = {
-      TableName: process.env.DYNAMODB_QUIZ_TABLE,
-      KeyConditionExpression: 'quizId = :quizId',
-      ExpressionAttributeValues: {
-        ':quizId': quizId,
-      },
-    };
+    const quiz = await checkIfQuizExists(quizId);
 
-    const quiz = await db.query(quizParams).promise();
-
-    if (quiz.Count === 0) {
+    if (!quiz) {
       return sendError(404, {
         success: false,
         message: 'Quiz not found.',
       });
     }
 
-    if (quiz.Items[0].creatorId !== userId) {
+    if (quiz.creatorId !== userId) {
       return sendError(403, {
         success: false,
         message: 'Access denied. You do not have permission to edit this quiz.',
@@ -68,7 +61,7 @@ const handler = middy(async (event) => {
 
     return sendResponse(200, {
       success: true,
-      message: `Questions successfully added to quiz ${quiz.Items[0].quizName}.`,
+      message: `Questions successfully added to quiz ${quiz.quizName}.`,
     });
   } catch (error) {
     return sendError(400, {
