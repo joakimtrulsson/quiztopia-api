@@ -65,7 +65,6 @@ const handler = middy(async (event, context) => {
       token,
     });
   } catch (error) {
-    console.error(error);
     return sendError(500, {
       success: false,
       errorMessage: error.message,

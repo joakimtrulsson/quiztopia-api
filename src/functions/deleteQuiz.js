@@ -8,24 +8,7 @@ const { db } = require('../services/index');
 const handler = middy(async (event, context) => {
   try {
     const quizId = event.pathParameters.quizId;
-
-    // const quizParams = {
-    //   TableName: process.env.DYNAMODB_QUIZ_TABLE,
-    //   KeyConditionExpression: 'quizId = :quizId',
-    //   ExpressionAttributeValues: {
-    //     ':quizId': quizId,
-    //   },
-    // };
-
-    // const quizResult = await db.query(quizParams).promise();
-    // console.log(quizResult);
-
-    // if (quizResult.Count === 0) {
-    //   return sendError(404, {
-    //     success: false,
-    //     message: 'Quiz not found.',
-    //   });
-    // }
+    const userId = event.userId;
 
     const quizExists = await checkIfQuizExists(quizId);
 
@@ -36,7 +19,7 @@ const handler = middy(async (event, context) => {
       });
     }
 
-    if (quizExists.Items[0].creatorId !== userId) {
+    if (quizExists.creatorId !== userId) {
       return sendError(403, {
         success: false,
         message: 'Access denied. You do not have permission to delete this quiz.',
@@ -95,7 +78,7 @@ const handler = middy(async (event, context) => {
 
     return sendResponse(200, {
       success: true,
-      message: `The quiz '${quizResult.Items[0].quizName}' (ID: ${quizResult.Items[0].quizId}) has been deleted.`,
+      message: `The quiz '${quizExists.quizName}' (ID: ${quizExists.quizId}) has been deleted.`,
     });
   } catch (error) {
     return sendError(500, {
